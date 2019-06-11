@@ -1,30 +1,36 @@
-const int w = 50;
-const int h = 20;
+const int w = 80;
+const int h = 25;
 
 typedef char * string;
 
-int cursor = 0;
+void printc(char l, char c, int *x, int *y, unsigned char *v){
+  int cursorX = *x;
+  int cursorY = *y;
+  switch(l){
+    case ('\n'):
+        *x = 0;
+        *y+=2;
+        break;
+    default:
+        v[(cursorY*w + cursorX)] = l;
+        v[(cursorY*w + cursorX)+1] = c;
+        *x+=2;
+        break;
+  }
 
-void printc(char l, char c, int *o, unsigned char *v){
-  v[*o] = l;
-  v[*(o)+1] = c;
-  *o+=2;
-  cursor++;
-  printcursor();
+  printcursor(*x,*y);
 
 }
 
 void cls(unsigned char *v){
-  int x = 0;
-  while(x < w * h * 2){
-    printc(' ', 0x07 , &x, v);
+  for (int i = 0; i < w*h*2; i++) {
+    v[i] = 0x0;
   }
-  cursor = 0;
 }
 
-void prints(char *p, int *o, unsigned char *v){
+void prints(char *p, int *x, int *y, unsigned char *v){
   for(int i = 0; p[i] != '\0'; ++i){
-    printc(p[i], 0x09, o, v);
+    printc(p[i], 0x09, x, y, v);
   }
 }
 
@@ -38,29 +44,27 @@ void outport(unsigned short port, unsigned short data){
   __asm__ __volatile__ ("out %1, %0" : : "dN" (port), "a" (data));
 }
 
-void printcursor(){
+void printcursor(int x,int y){
   outport(0x3D4, 14);
-  outport(0x3D5, cursor >> 8);
+  outport(0x3D5, (y*w + x) >> 8);
   outport(0x3D4, 15);
-  outport(0x3D5, cursor);
+  outport(0x3D5, (y*w + x));
 }
 
-void nextLine( int *o, unsigned char *v){
-  int a = w-((*o)/2);
-  printc(*(o)/2 + 48, 0x07, o, v);
-  for(int i = 0; i < a; i++){
-    printc(i+48, 0x07, o, v);
+void nextLine(){
+  string vidmem = (string)0xb8000;
+  for(int i = 0; i < w*(h-1)*2; i++){
+    vidmem[i] = vidmem[i + w*2];
   }
 }
 
 kmain()
 {
   unsigned char *video = (unsigned char *)0xB8000;
-  int offset = 0;
+  int cursorX = 0;
+  int cursorY = 0;
   cls(video);
-  string a = "OLA";
-  prints(a, &offset, video);
-  //nextLine(&offset, video);
-  string p = "LibreOS>";
-  prints(p, &offset, video);
+  string p = "Ola amigos, welcome al (prueba de salto de linea) \n LibreOS>";
+  prints(p, &cursorX, &cursorY, video);
+
 }
