@@ -1,7 +1,7 @@
-#LibreOS project :computer:
+# LibreOS project :computer:
 _please note this project is only for learning purposes_
 
-##why even bother doing this?
+## why even bother doing this?
   * Learning Purposes:
     * Studying computer science at university, I joined a group of geeks under the name of LibreLabUCM, they helped me materializing my interest in Linux and Free Software development.
     * I know understanding and mastering every aspect of this life (life=linux kernel and computer architecture in general) is close to impossible but why not trying to develop a little kernel just for fun?
