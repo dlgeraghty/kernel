@@ -58,13 +58,30 @@ void nextLine(){
   }
 }
 
+int strlength(string s){
+  int l = 0;
+  while(s[l] != '\0') l++;
+  return l;
+}
+
+int strEql(string a, string b){
+  int l = strlength(a);
+  if(l == strlength(b)){
+    for(l; l > 0; l--){
+      if(a[l] != b[l]) return 0;
+    }return 1;
+  }else{
+    return 0;
+  }
+}
+
 kmain()
 {
   unsigned char *video = (unsigned char *)0xB8000;
   int cursorX = 0;
   int cursorY = 0;
   cls(video);
-  string p = "Ola amigos, welcome al (prueba de salto de linea) \n LibreOS>";
+  string p = "Ola amigos, welcome al (prueba de salto de linea) \nLibreOS>\nPrueba de strEql";
   prints(p, &cursorX, &cursorY, video);
-
+  //printc(strEql("ola","olo")+'0', 0x07, &cursorX, &cursorY, video);
 }
