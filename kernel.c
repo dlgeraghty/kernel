@@ -36,7 +36,7 @@ void prints(char *p, int *x, int *y, unsigned char *v){
 
 int inport(unsigned short port){
   int rv;
-  __asm__ __volatile__ ("in %1, %0" : "=a" (rv) : "dN" (port));
+  __asm__ __volatile__ ("inb %1, %0" : "=a" (rv) : "dN" (port));
   return rv;
 }
 
@@ -75,6 +75,28 @@ int strEql(string a, string b){
   }
 }
 
+string readkb(int *x, int *y, unsigned char *v){
+  string strbuff;
+  int i = 0;
+  int reading = 1;
+  while(reading){
+    if(inport(0x64) & 0x1){
+      switch(inport(0x60)){
+        case 16:
+          printc('Q',0x07, x, y, v);
+          strbuff[i] = 'Q';
+          i++;
+          break;
+        case 28:
+          reading = 0;
+          strbuff[i] = '\0';
+          break;
+      }
+    }
+  }
+  return strbuff;
+}
+
 kmain()
 {
   unsigned char *video = (unsigned char *)0xB8000;
@@ -84,4 +106,14 @@ kmain()
   string p = "Ola amigos, welcome al (prueba de salto de linea) \nLibreOS>\nPrueba de strEql";
   prints(p, &cursorX, &cursorY, video);
   //printc(strEql("ola","olo")+'0', 0x07, &cursorX, &cursorY, video);
+  while(1){
+    prints("DOS>", &cursorX, &cursorY, video);
+    string s = readkb(&cursorX, &cursorY, video);
+    if(strEql(s, "Q")){
+      prints("Correct", &cursorX, &cursorY, video);
+    }else{
+      prints("Acces denied", &cursorX, &cursorY, video);
+    }
+    printc('\n',0x07, &cursorX, &cursorY, video);
+  }
 }
