@@ -97,7 +97,7 @@ string readkb(int *x, int *y, unsigned char *v){
   return strbuff;
 }
 
-kmain()
+int kmain()
 {
   unsigned char *video = (unsigned char *)0xB8000;
   int cursorX = 0;
@@ -116,4 +116,5 @@ kmain()
     }
     printc('\n',0x07, &cursorX, &cursorY, video);
   }
+  return 0; 
 }
