@@ -110,7 +110,7 @@ kmain()
     prints("DOS>", &cursorX, &cursorY, video);
     string s = readkb(&cursorX, &cursorY, video);
     if(strEql(s, "Q")){
-      prints("Correct", &cursorX, &cursorY, video);
+      createfile();
     }else{
       prints("Acces denied", &cursorX, &cursorY, video);
     }
